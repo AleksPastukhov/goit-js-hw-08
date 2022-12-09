@@ -13,4 +13,7 @@ function onPlayWidtUpdate(e) {
 }
 
 const saveTimeCode = localStorage.getItem("videoplayer-current-time");
-player.setCurrentTime(saveTimeCode);
+if(saveTimeCode) {
+  player.setCurrentTime(saveTimeCode);
+}
+

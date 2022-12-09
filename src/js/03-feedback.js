@@ -11,14 +11,18 @@ refs.textarea.addEventListener('input', throttle(onTextareaDataEntry, 500))
 refs.input.addEventListener('input', throttle(onInputDataEntry, 500))
 
 
-const data = {};
 
-populateTextarea();
+const data = {
+    message: '',
+    email: '',
+};
 
+dataOutputAfterReboot();
+checkOfEnteredData();
 
 function onFormSubmit (e){
     e.preventDefault()
-    console.log(populateTextarea())
+    console.log(dataOutputAfterReboot())
     e.target.reset()
     localStorage.removeItem("feedback-form-state")
 }
@@ -35,23 +39,28 @@ function onInputDataEntry (e){
         recordsData(data)
     }
     
+ 
 function recordsData(data){
     localStorage.setItem("feedback-form-state", JSON.stringify(data))
 }
 
-function populateTextarea(){
+function checkOfEnteredData(){
+if (refs.textarea.value){
+    data.message = refs.textarea.value;
+    localStorage.setItem("feedback-form-state", JSON.stringify(data))
+}
+if (refs.input.value){
+    data.email = refs.input.value;
+    localStorage.setItem("feedback-form-state", JSON.stringify(data))
+}
+}
+
+function dataOutputAfterReboot(){
     const saveData = JSON.parse(localStorage.getItem("feedback-form-state"));
     if(saveData) {
-        if(saveData.message) {
             refs.textarea.value = saveData.message;
-        } else {
-            refs.textarea.value = '';
-        }
-        if(saveData.email) {
             refs.input.value = saveData.email;
-        } else {
-            refs.input.value = '';
-        }
-    }
-    return saveData
+            return saveData
+    } 
 }
+
