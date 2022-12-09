@@ -7,10 +7,7 @@ const refs = {
 }
 
 refs.form.addEventListener('submit', onFormSubmit)
-refs.textarea.addEventListener('input', throttle(onTextareaDataEntry, 500))
-refs.input.addEventListener('input', throttle(onInputDataEntry, 500))
-
-
+refs.form.addEventListener('input', throttle(onTextareaOrInputDataEntry, 500))
 
 const data = {
     message: '',
@@ -22,24 +19,25 @@ checkOfEnteredData();
 
 function onFormSubmit (e){
     e.preventDefault()
-    console.log(dataOutputAfterReboot())
+
+    let formData = new FormData(e.target)
+    formData.forEach((value, name) => {
+        data[name] = value
+    })
+    console.log(data)
+
     e.target.reset()
     localStorage.removeItem("feedback-form-state")
+
 }
 
-function onTextareaDataEntry (e){
-    const message = e.target.value
-    data.message = message;
+function onTextareaOrInputDataEntry (e){
+    const value = e.target.value
+    const name = e.target.name
+    data[name] = value;
     recordsData(data)
 }
 
-function onInputDataEntry (e){
-        const email = e.target.value
-        data.email = email;
-        recordsData(data)
-    }
-    
- 
 function recordsData(data){
     localStorage.setItem("feedback-form-state", JSON.stringify(data))
 }
